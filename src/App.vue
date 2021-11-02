@@ -56,13 +56,30 @@
 
     <section class="container py-5 px-0" v-if="posts.length">
       <div class="p-3 bg-dark">
-        <!-- <link-prevue
+        <h4 class="display-5 px-2 pb-4 text-secondary border-bottom">Latest Posts</h4>
+        <link-prevue
           v-for="(GoogleSpreadsheetRow, index) in posts"
           :key="index"
-          url="https://vuejs.org/"
-        ></link-prevue> -->
-        <h4 class="display-5 px-2 pb-4 text-secondary border-bottom">Latest Posts</h4>
-        <ul class="list-unstyled list-group rounded">
+          :url="GoogleSpreadsheetRow.LINK"
+          class="w-100">
+          <template slot-scope="props">
+            <div class="card mb-3 bg-dark">
+              <div class="row g-0">
+                <div class="col-md-4 d-flex align-items-center">
+                  <img class="img-fluid rounded-start" :src="props.img" :alt="props.title" />
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h4 class="card-title text-light">{{props.title}}</h4>
+                    <p class="text-secondary">{{props.description}}</p>
+                    <a v-bind:href="props.url" class="btn btn-sm btn-primary">More</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </link-prevue>
+        <!-- <ul class="list-unstyled list-group rounded">
           <li
             v-for="(GoogleSpreadsheetRow, index) in posts"
             :key="index"
@@ -71,7 +88,7 @@
             <div class="text-warning">{{ GoogleSpreadsheetRow.AUTHOR }}</div>
             <div class="text-light">{{ GoogleSpreadsheetRow.TITLE }} <a class="text-primary text-wrap text-break" :href="GoogleSpreadsheetRow.LINK">View</a></div>
           </li>
-        </ul>
+        </ul> -->
       </div>
     </section>
 
@@ -81,7 +98,7 @@
 
 <script>
 import { GoogleSpreadsheet } from 'google-spreadsheet';
-// import LinkPrevue from 'link-prevue'
+import LinkPrevue from 'link-prevue'
 
 const SHEET_ID = process.env.VUE_APP_SHEET_ID;
 const CREDENTIALS = {
@@ -91,9 +108,9 @@ const CREDENTIALS = {
 export default {
   name: 'App',
   
-  // components: {
-  //   LinkPrevue
-  // },
+  components: {
+    LinkPrevue
+  },
   
   data () {
     return {
