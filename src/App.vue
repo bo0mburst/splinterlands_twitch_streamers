@@ -9,6 +9,9 @@
           <div class="d-md-flex h-100">
               <div class="px-3 col-md-6 text-center">
                   <img class="w-100" src="@/assets/mascott.png" alt="">
+                  <div class="text-center mt-3">
+                      <a class="h3 text-secondary text-decoration-none" href="https://discord.gg/m34Em3ze" aria-label="discord">Join our discord channel</a>
+                  </div>
               </div>
               <div class="mt-5 mt-md-0 d-fkex flex-colum pb-md-5 mb-md-5 w-100 h-100 overflow-hidden">
                   <div class="px-3 d-flex align-items-center">
@@ -47,10 +50,6 @@
               </div>
           </div>
       </div>
-
-      <footer class="container px-md-0 d-md-flex justify-content-between">
-          <a class="badge text-light bg-primary text-decoration-none" href="https://discord.gg/m34Em3ze" aria-label="discord">Join our discord channel</a>
-      </footer>
     </section>
     
 
