@@ -65,11 +65,12 @@
             <div class="card mb-3 bg-dark">
               <div class="row g-0">
                 <div class="col-md-4 d-flex align-items-center">
-                  <img class="img-fluid rounded-start" :src="props.img" :alt="props.title" />
+                  <img class="img-fluid rounded-start" :src="props.img" :alt="props.title" v-if="props.img"/>
+                  <div v-else class="img-fluid p-3 text-center text-muted">No image available</div>
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
-                    <h4 class="card-title text-light">{{props.title}}</h4>
+                    <h4 class="card-title text-light">{{props.title || GoogleSpreadsheetRow.TITLE}}</h4>
                     <p class="text-secondary">{{props.description}}</p>
                     <a v-bind:href="props.url" class="btn btn-sm btn-primary">More</a>
                   </div>
