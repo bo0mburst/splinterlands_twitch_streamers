@@ -16,7 +16,7 @@
 		<div class="" id="modalSpinwheel" v-if="modalPrize">
 			<div>
 				<h2 class="text-secondary">
-					Move <span class="text-light">{{prizeName}}</span> {{ Number(prizeName) > 1 ? 'steps' : 'step'}}
+					Move <span class="text-light">{{String(prizeName).toLowerCase()}}</span> {{ prizeName !== 'One' ? 'steps' : 'step'}}
 				</h2>
 				
 				<a href="" class="btn btn-danger text-decoration-none" @click.prevent="hidePrize()">
