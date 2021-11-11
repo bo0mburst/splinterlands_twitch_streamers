@@ -146,14 +146,21 @@ export default {
   methods: {
     init () {
       let prizes = this.getPrizes()
-      if (!prizes.sub) this.setPrizes('nosleepgang-sub-prizes', [])
-      if (!prizes.ff) this.setPrizes('nosleepgang-ff-prizes', [])
+      if (!prizes.sub) {
+        this.setPrizes('nosleepgang-sub-prizes', [])
+        prizes.sub = []
+      }
+      if (!prizes.ff) {
+        this.setPrizes('nosleepgang-ff-prizes', [])
+        prizes.ff = []
+      }
       this.prizes = this.isSubOnly ? prizes.sub : prizes.ff
       this.list = prizes.sub.join('\n')
       this.list2 = prizes.ff.join('\n')
       this.generatePrizeItems(this.prizes);
     },
     setActiveTile (e) {
+      if (!this.tiles.length) return;
       let result = this.activeTile;
       for(let i = 0; i < Number(e); i++) {
         setTimeout(() => {
@@ -201,6 +208,7 @@ export default {
     shuffleTiles () {
       this.generatePrizeItems(this.prizes);
       const tiles = this.$el.querySelectorAll('.tile');
+      if(!tiles.length) return;
       for(let i = 0; i < 10; i++) {
         setTimeout(() => {
           tiles[i].classList.add('shuffled')
