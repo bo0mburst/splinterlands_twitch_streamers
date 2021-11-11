@@ -10,7 +10,7 @@
             @click="view(index, item)"
             data-bs-toggle="modal" data-bs-target="#prizeModal"
         >
-            <h1>{{index + 1}}</h1>
+            <h3>{{index + 1}}</h3>
         </button>
     </div>
 

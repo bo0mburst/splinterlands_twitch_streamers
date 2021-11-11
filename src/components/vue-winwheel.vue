@@ -104,7 +104,7 @@ export default {
 
   watch: {
 	wheelSpinning(val) {
-		if (!val) this.$emit('change', this.prizeName)
+		if (!val) this.$emit('change', this.segments.findIndex(i => i.text === this.prizeName) + 1)
 	}
   },
 
