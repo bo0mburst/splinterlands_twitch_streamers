@@ -108,32 +108,32 @@ export default {
               {
                   textFillStyle: '#fff',
                   fillStyle: '#0e9dd9',
-                  text:'1'
+                  text:'One'
               },
               {
                   textFillStyle: '#fff',
                   fillStyle: '#6441a4',
-                  text:'2'
+                  text:'Two'
               },
               {
                   textFillStyle: '#fff',
                   fillStyle: '#0e9dd9',
-                  text:'3'
+                  text:'Three'
               },
               {
                   textFillStyle: '#fff',
                   fillStyle: '#6441a4',
-                  text:'4'
+                  text:'Four'
               },
               {
                   textFillStyle: '#fff',
                   fillStyle: '#0e9dd9',
-                  text:'5'
+                  text:'Five'
               },
               {
                   textFillStyle: '#fff',
                   fillStyle: '#6441a4',
-                  text:'6'
+                  text:'Six'
               }
           ]
       }
