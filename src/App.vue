@@ -48,4 +48,6 @@
   }
 
   *::-webkit-scrollbar-thumb { background-color: #6441a4; }
+
+  #confetti-canvas { z-index: 1051; }
 </style>

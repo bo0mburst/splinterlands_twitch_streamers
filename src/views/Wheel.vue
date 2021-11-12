@@ -1,5 +1,6 @@
 <template>
   <div id="wheel" class="min-vh-100">
+    <grant :coords="coords" :backgroundPos="character" @stop="setActiveTile"/>
     <day-night/>
     <div class="position-relative min-vh-100 bg-dark">
       <div class="px-3 mb-3 d-flex align-items-center justify-content-end">
@@ -18,7 +19,7 @@
       </div>
       <div class="row w-100 mx-0">
         <div class="col-md-4">
-            <vue-win-Wheel :segments="options" @change="setActiveTile" ref="vue-wheel" />
+            <vue-win-Wheel :segments="options" @change="moveCharacter" ref="vue-wheel" />
         </div>
 
         <div class="col-md-8 d-flex flex-column justify-content-center">
@@ -40,10 +41,18 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="settingsModal">Prize list</h5>
+            <h5 class="modal-title" id="settingsModal">Settings</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <h3>Pick your character</h3>
+            <div class="d-flex flex-wrap">
+              <div v-for="(item, index) in 6" :key="`row1-${index}`" class="grant-picker" :style="`background-position: -${((item - 1) * 50) + 5}px 0`" @click="setCharacter(`background-position: -${((item - 1) * 50) + 3}px 0`)"></div>
+              <div v-for="(item, index) in 6" :key="`row2-${index}`" class="grant-picker" :style="`background-position: -${((item - 1) * 50) + 5}px 94px`" @click="setCharacter(`background-position: -${((item - 1) * 50) + 3}px 94px`)"></div>
+              <div v-for="(item, index) in 6" :key="`row3-${index}`" class="grant-picker" :style="`background-position: -${((item - 1) * 50) + 5}px 195px`" @click="setCharacter(`background-position: -${((item - 1) * 50) + 3}px 195px`)"></div>
+              <div v-for="(item, index) in 2" :key="`row4-${index}`" class="grant-picker" :style="`background-position: -${((item) * 50)+50}px -204px`" @click="setCharacter(`background-position: -${((item) * 50)+50}px -204px`)"></div>
+            </div>
+            <h3>Prize list</h3>
             <p class="small text-muted">Enter your list of prizes here. 1 line per prize. If you have more than 1 of the same prize, you must enter it again.</p>
             <div class="row">
               <div class="col-md-6">
@@ -94,16 +103,19 @@
 import VueWinWheel from '@/components/vue-winwheel.vue';
 import Tiles from '@/components/Tiles.vue';
 import DayNight from '@/components/DayNight.vue';
+import Grant from "@/components/Grant";
 
 export default {
   data(){
       return{
+          character:'',
           isSubOnly: true,
           list: '',
           list2: '',
           prizes: [],
           tiles: [],
           activeTile: 0,
+          active: 0,
           options:[
               {
                   textFillStyle: '#fff',
@@ -135,16 +147,27 @@ export default {
                   fillStyle: '#6441a4',
                   text:'Six'
               }
-          ]
+          ],
+          coords: { x: 0, y: 0}
       }
   },
 
   mounted () {
     this.init();
+    let timer;
+    window.addEventListener('resize', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+          this.coords= { x: 0, y: 0};
+          this.moveCharacter(0)
+        }, 1000)
+    });
   },
 
   methods: {
     init () {
+      this.character = this.getCharacter();
+
       let prizes = this.getPrizes()
       if (!prizes.sub) {
         this.setPrizes('nosleepgang-sub-prizes', [])
@@ -159,16 +182,43 @@ export default {
       this.list2 = prizes.ff.join('\n')
       this.generatePrizeItems(this.prizes);
     },
-    setActiveTile (e) {
+    moveCharacter (e) {
       if (!this.tiles.length) return;
-      let result = this.activeTile;
-      for(let i = 0; i < Number(e); i++) {
-        setTimeout(() => {
-          result += 1;
-          if (result > this.tiles.length) result -= this.tiles.length
-          this.activeTile = result
-        }, i * 500);
-      }
+      this.activeTile = 0
+      let result = this.active + e;
+      if (result > this.tiles.length) result -= this.tiles.length
+      const el = this.$el.querySelector(`.tile:nth-child(${result})`)
+      const tilePos = this.getOffset(el)
+      setTimeout(() => {
+        this.coords = tilePos;
+        this.active = result;
+      }, 300)
+    },
+
+    setActiveTile () {
+      this.activeTile = this.active;
+    },
+
+    getOffset(el) {
+      const rect = el.getBoundingClientRect()
+      const style = getComputedStyle(el)
+      const height = parseFloat(style.height, 10)
+      const width = parseFloat(style.width, 10)
+      return {
+        x: (rect.left + window.scrollX) + (width/2),
+        y: (rect.top + window.scrollY) + (height/2)
+      };
+    },
+
+    getCharacter () {
+      const backgroundPos = localStorage.getItem('nosleepgang-char')
+      if (!backgroundPos) return  'background-position: 0 0'
+      return JSON.parse(backgroundPos)
+    },
+
+    setCharacter(backgroundPos) {
+      localStorage.setItem('nosleepgang-char', JSON.stringify(backgroundPos))
+      this.character = backgroundPos
     },
 
     getPrizes () {
@@ -278,7 +328,17 @@ export default {
   components: {
     VueWinWheel,
     Tiles,
-    DayNight
+    DayNight,
+    Grant
   }
 }
 </script>
+
+<style scoped>
+.grant-picker {
+  width: 50px;
+  height: 50px;
+  background-image: url('../assets/ghosts.svg');
+  background-size: 310px;
+}
+</style>

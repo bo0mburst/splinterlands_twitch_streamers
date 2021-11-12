@@ -6,21 +6,22 @@
             v-for="(item, index) in items"
             :key="index"
             class="tile btn p-1 btn-dark d-flex align-items-center justify-content-center" style="height: 60px; width: 10%;"
-            :class="{'active' : active == index + 1 }"
             @click="view(index, item)"
+            :class="{'active' : active == index + 1 }"
             data-bs-toggle="modal" data-bs-target="#prizeModal"
         >
-            <h3>{{index + 1}}</h3>
+        
+            <h5>{{index + 1}}</h5>
         </button>
     </div>
 
-    <div class="modal fade  bg-black bg-opacity-75" id="prizeModal" tabindex="-1"  aria-hidden="true">
+    <div class="modal fade " id="prizeModal" tabindex="-1"  aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-transparent">
           <div class="modal-body">
             <div class="text-center text-warning h3 mb-5">Congratulations!!!</div>
             <div class="d-flex align-items-center justify-content-center">
-                <div class="flip-card" @click="isOpen = true" :class="{'open' : isOpen}">
+                <div class="flip-card" @click="open" :class="{'open' : isOpen}">
                     <div class="flip-card-inner">
                         <div class="flip-card-front bg-primary d-flex align-items-center justify-content-center">
                             <!-- <div class="display-3 text-light">
@@ -37,8 +38,8 @@
                 </div>
             </div>
             <div class="d-flex flex-wrap justify-content-evenly mt-5">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="$emit('remove', viewItem)">Remove & Close</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close Only</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="closeAndRemove(viewItem)">Remove & Close</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="close">Close Only</button>
             </div>
           </div>
         </div>
@@ -46,8 +47,8 @@
     </div>
 </div>
 </template>
-
 <script>
+
 export default {
     props: {
         items:{
@@ -73,6 +74,28 @@ export default {
             this.isOpen = false;
             this.viewIndex = index
             this.viewItem = item
+        },
+        open () {
+            this.isOpen = true;
+            this.$confetti.start({
+                particles: [
+                    {
+                        type: 'rect',
+                    },
+                ],
+                defaultColors: [
+                    '#6441a4',
+                    '#0e9dd9'
+                ],
+            });
+        },
+        closeAndRemove (viewItem) {
+            this.$emit('remove', viewItem);
+            this.close();
+        },
+
+        close () {
+            this.$confetti.stop()
         }
     }
 }
@@ -129,6 +152,7 @@ export default {
         backface-visibility: hidden;
         border-radius: 20px;
         animation: glow 1s infinite alternate;
+        z-index: inherit;
     }
     /* Style the back side */
     .flip-card-back {
