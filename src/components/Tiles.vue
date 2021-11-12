@@ -29,8 +29,8 @@
                             </div> -->
                             <img class="mx-auto d-inline-block" src="@/assets/NO-SLEEP-GANG.gif" alt="" style="height: 100%;">
                         </div>
-                        <div class="flip-card-back bg-danger d-flex align-items-center justify-content-center">
-                            <div class="h4 text-light">
+                        <div class="flip-card-back bg-warning d-flex align-items-center justify-content-center">
+                            <div class="h4 text-dark">
                                 {{ viewItem }}
                             </div>
                         </div>

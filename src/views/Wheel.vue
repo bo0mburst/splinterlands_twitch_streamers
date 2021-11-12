@@ -1,15 +1,22 @@
 <template>
   <div id="wheel" class="min-vh-100">
-    <grant :coords="coords" :backgroundPos="character" @stop="setActiveTile"/>
+    <grant :coords="coords" :backgroundPos="activeChar ? activeChar.sprite : ''" @stop="setActiveTile" :title="activeChar ? activeChar.name : ''"/>
     <day-night/>
     <div class="position-relative min-vh-100 bg-dark">
-      <div class="px-3 mb-3 d-flex align-items-center justify-content-end">
+      <div class="px-3 mb-3 d-flex flex-wrap align-items-center justify-content-end">
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked v-model="isSubOnly" @change="init">
           <label class="form-check-label" :class="isSubOnly ? 'text-warning' :'text-light'" for="flexSwitchCheckChecked">
             {{isSubOnly ? 'Subscribers only prizes' : 'Followers prizes'}}
           </label>
         </div>
+
+        <div class="ms-4 border border-warning p-1 rounded">
+            <span class="text-warning me-2 small">#</span>
+            <input type="number" id="inputPassword6" class="form-control py-0 d-inline-block" style="width: 5rem;" min="0" max="100" v-model="manualInput">
+            <button class="btn btn-sm btn-warning py-0 ms-2" @click="moveCharacterManually">Go</button>
+        </div>
+
         <button data-bs-toggle="modal" data-bs-target="#settingsModal" class="btn btn-lg text-warning bg-none" title="settings">
           <i class="fa fa-cog" aria-hidden="true"></i>
         </button>
@@ -38,36 +45,53 @@
     
 
     <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModal" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="settingsModal">Settings</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <h3>Pick your character</h3>
-            <div class="d-flex flex-wrap">
-              <div v-for="(item, index) in 6" :key="`row1-${index}`" class="grant-picker" :style="`background-position: -${((item - 1) * 50) + 5}px 0`" @click="setCharacter(`background-position: -${((item - 1) * 50) + 3}px 0`)"></div>
-              <div v-for="(item, index) in 6" :key="`row2-${index}`" class="grant-picker" :style="`background-position: -${((item - 1) * 50) + 5}px 94px`" @click="setCharacter(`background-position: -${((item - 1) * 50) + 3}px 94px`)"></div>
-              <div v-for="(item, index) in 6" :key="`row3-${index}`" class="grant-picker" :style="`background-position: -${((item - 1) * 50) + 5}px 195px`" @click="setCharacter(`background-position: -${((item - 1) * 50) + 3}px 195px`)"></div>
-              <div v-for="(item, index) in 2" :key="`row4-${index}`" class="grant-picker" :style="`background-position: -${((item) * 50)+50}px -204px`" @click="setCharacter(`background-position: -${((item) * 50)+50}px -204px`)"></div>
-            </div>
-            <h3>Prize list</h3>
-            <p class="small text-muted">Enter your list of prizes here. 1 line per prize. If you have more than 1 of the same prize, you must enter it again.</p>
             <div class="row">
               <div class="col-md-6">
-                <p>For Subscribers Only</p>
-                <textarea class="w-100" style="min-height: 300px;" v-model="list"></textarea>
+                <strong>Add characters</strong>
+                <ul>
+                  <li v-for="(character, charIndex) in characters" :key="charIndex" class="row align-items-center">
+                    <div class="col-8 d-flex align-items-center p">
+                      <div class="form-check d-inline-block text-primary">
+                        <input class="form-check-input" type="radio" name="active-character" :id="`radio-${charIndex}`" :value="character" v-model="activeChar" @change="changeActiveChar">
+                        <label class="form-check-label" :for="`radio-${charIndex}`" />
+                      </div>
+                      <input type="text" class="form-control" v-model="character.name" @change="setCharacterName">
+                    </div>
+                    <div class="col-4">
+                      <button class="btn btn-secondary p-1" type="button"  data-bs-toggle="modal" data-bs-target="#sprites" style="transform: scale(.5)" @click="charIdxToSetSprite = charIndex">
+                        <div v-if="character.sprite" class="grant-picker" :style="character.sprite"></div>
+                        <span v-else>Select sprite</span>
+                      </button>
+                      <button v-if="charIndex > 0" class="btn btn-link btn-sm text-danger" @click="removeChar(character.id)">x</button>
+                    </div>
+                  </li>
+                </ul>
+                <div class="text-end px-3">
+                  <button class="btn btn-primary btn-sm" @click="addCharacter">Add</button>
+                </div>
               </div>
               <div class="col-md-6">
-                <p>For Followers</p>
-                <textarea class="w-100" style="min-height: 300px;" v-model="list2"></textarea>
+                <strong>Prize list</strong>
+                <p class="small text-muted">Enter your list of prizes here. 1 line per prize. If you have more than 1 of the same prize, you must enter it again.</p>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p>For Subscribers Only</p>
+                    <textarea class="w-100" style="min-height: 300px;" v-model="list" @change="saveList"></textarea>
+                  </div>
+                  <div class="col-md-6">
+                    <p>For Followers</p>
+                    <textarea class="w-100" style="min-height: 300px;" v-model="list2" @change="saveList"></textarea>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" @click="saveList" data-bs-dismiss="modal">Save changes</button>
           </div>
         </div>
       </div>
@@ -96,6 +120,25 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="sprites" tabindex="-1" aria-labelledby="helpModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content bg-warning text-light">
+          <div class="modal-header">
+            <h5 class="modal-title text-dark" id="helpModal">Select sprite</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex flex-wrap">
+              <div v-for="(item, index) in 6" :key="`row1-${index}`" class="grant-picker" :style="`background-position: -${((item - 1) * 50) + 5}px 0`" @click="setCharacterSprite(`background-position: -${((item - 1) * 50) + 3}px 0`)"></div>
+              <div v-for="(item, index) in 6" :key="`row2-${index}`" class="grant-picker" :style="`background-position: -${((item - 1) * 50) + 5}px 94px`" @click="setCharacterSprite(`background-position: -${((item - 1) * 50) + 3}px 94px`)"></div>
+              <div v-for="(item, index) in 6" :key="`row3-${index}`" class="grant-picker" :style="`background-position: -${((item - 1) * 50) + 5}px 195px`" @click="setCharacterSprite(`background-position: -${((item - 1) * 50) + 3}px 195px`)"></div>
+              <div v-for="(item, index) in 2" :key="`row4-${index}`" class="grant-picker" :style="`background-position: -${((item) * 50)+50}px -204px`" @click="setCharacterSprite(`background-position: -${((item) * 50)+50}px -204px`)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -108,7 +151,14 @@ import Grant from "@/components/Grant";
 export default {
   data(){
       return{
-          character:'',
+          activeChar: null,
+          charIdxToSetSprite: 0,
+          characters: [{
+            id: 1,
+            name: 'Default',
+            sprite: 'background-position: 0 0;',
+            pos: 0
+          }],
           isSubOnly: true,
           list: '',
           list2: '',
@@ -148,17 +198,27 @@ export default {
                   text:'Six'
               }
           ],
-          coords: { x: 0, y: 0}
+          coords: {x: 50, y: 50},
+          manualInput: 0
       }
   },
 
-  mounted () {
+  created () {
     this.init();
+  },
+
+  mounted () {
+    this.characters = this.getCharacters();
+    let id = localStorage.getItem('nosleepgang-active-char-idx')
+    this.activeChar = id ? this.characters.filter(i => i.id === String(JSON.parse(id)))[0] : this.characters[0]
+    this.active = this.activeChar.pos;
+    this.moveCharacter(0);
+
     let timer;
     window.addEventListener('resize', () => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-          this.coords= { x: 0, y: 0};
+          this.coords= {x: 50, y: 50};
           this.moveCharacter(0)
         }, 1000)
     });
@@ -166,8 +226,6 @@ export default {
 
   methods: {
     init () {
-      this.character = this.getCharacter();
-
       let prizes = this.getPrizes()
       if (!prizes.sub) {
         this.setPrizes('nosleepgang-sub-prizes', [])
@@ -182,17 +240,28 @@ export default {
       this.list2 = prizes.ff.join('\n')
       this.generatePrizeItems(this.prizes);
     },
+
     moveCharacter (e) {
       if (!this.tiles.length) return;
       this.activeTile = 0
-      let result = this.active + e;
+      let result = Number(this.active) +  Number(e);
       if (result > this.tiles.length) result -= this.tiles.length
-      const el = this.$el.querySelector(`.tile:nth-child(${result})`)
-      const tilePos = this.getOffset(el)
-      setTimeout(() => {
-        this.coords = tilePos;
-        this.active = result;
-      }, 300)
+      if (result > 0) {
+        const el = this.$el.querySelector(`.tile:nth-child(${result})`)
+        const tilePos = this.getOffset(el)
+  
+        setTimeout(() => {
+          this.coords = tilePos;
+          this.active = result;
+          this.updateCharPos();
+        }, 300)
+      } else {
+        setTimeout(() => {
+          this.coords = {x: 50, y: 50};
+          this.active = 0;
+          this.updateCharPos();
+        }, 300)
+      }
     },
 
     setActiveTile () {
@@ -200,6 +269,7 @@ export default {
     },
 
     getOffset(el) {
+      if (!el) return;
       const rect = el.getBoundingClientRect()
       const style = getComputedStyle(el)
       const height = parseFloat(style.height, 10)
@@ -210,15 +280,32 @@ export default {
       };
     },
 
-    getCharacter () {
-      const backgroundPos = localStorage.getItem('nosleepgang-char')
-      if (!backgroundPos) return  'background-position: 0 0'
-      return JSON.parse(backgroundPos)
+    updateCharPos () {
+      const activeId = this.activeChar ? this.activeChar.id : 1
+      const idx = this.characters.findIndex(i => i.id === activeId)
+      this.characters[idx].pos = this.active;
+      localStorage.setItem('nosleepgang-chars', JSON.stringify(this.characters))
     },
 
-    setCharacter(backgroundPos) {
-      localStorage.setItem('nosleepgang-char', JSON.stringify(backgroundPos))
-      this.character = backgroundPos
+    getCharacters () {
+      const characters = localStorage.getItem('nosleepgang-chars')
+      if (!characters) return  this.characters
+      return JSON.parse(characters)
+    },
+
+    setCharacterSprite(backgroundPos) {
+      this.characters[this.charIdxToSetSprite].sprite = backgroundPos
+      localStorage.setItem('nosleepgang-chars', JSON.stringify(this.characters))
+    },
+
+    setCharacterName () {
+      localStorage.setItem('nosleepgang-chars', JSON.stringify(this.characters))
+    },
+
+    changeActiveChar() {
+      localStorage.setItem('nosleepgang-active-char-idx', this.activeChar.id)
+      this.active = this.activeChar.pos
+      this.moveCharacter(0);
     },
 
     getPrizes () {
@@ -307,8 +394,11 @@ export default {
     },
 
     reset () {
-      this.activeTile = 0;
-      this.$refs['vue-wheel'].hidePrize(); 
+      this.active = 0;
+      this.setActiveTile(0);
+      this.coords= {x: 50, y: 50};
+      this.$refs['vue-wheel'].hidePrize();
+      this.updateCharPos();
     },
 
     removePrize (e) {
@@ -322,6 +412,39 @@ export default {
         this.list2 = this.prizes.join('\n')
       }
       this.generatePrizeItems(this.prizes);
+    },
+
+    moveCharacterManually() {
+      this.manualInput = Math.max(0, Math.min(this.manualInput, 100));
+      this.active = 0
+      this.moveCharacter(this.manualInput)
+    },
+
+    getRandomString(length) {
+        var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var result = '';
+        for ( var i = 0; i < length; i++ ) {
+            result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+        }
+        return result;
+    },
+
+    addCharacter () {
+      const name = this.getRandomString(5)
+      const id = `${Math.floor(Math.random() * 100)}${Date.now()}`
+      this.characters.push({
+        id,
+        name,
+        sprite: 'background-position: 0 0;',
+        pos: 0
+      })
+      localStorage.setItem('nosleepgang-chars', JSON.stringify(this.characters))
+    },
+
+    removeChar (id) {
+      this.activeChar = this.characters[0];
+      this.changeActiveChar();
+      this.characters = this.characters.filter(i => i.id !== id);
     }
   },
 

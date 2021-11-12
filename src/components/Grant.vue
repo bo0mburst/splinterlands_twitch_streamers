@@ -1,7 +1,9 @@
 <template>
   <div class="grunt" v-bind:style="styles">
-      <div class="character-wrapper w-100 h-100" :class="this.animationName">
-        <div :style="backgroundPos" class="character w-100 h-100"></div>
+      <div class="character-wrapper w-100 h-100 text-right" :class="this.animationName">
+        <div :style="backgroundPos" class="character w-100 h-100">
+            <div class="d-inline-block bg-white bg-opacity-75 text-dark px-2 grant-name rounded-pill" v-if="title">{{ title }}</div>
+        </div>
       </div>
   </div>
 </template>
@@ -9,6 +11,10 @@
 <script>
 export default {
     props: {
+        title: {
+            type: String,
+            default: '--'
+        },
         backgroundPos: {
             type: String,
             default: 'background-position: 0 0;'
@@ -94,15 +100,27 @@ export default {
 
 .walk-SW,
 .walk-NW,
-.walk-W { transform: scaleX(-1); }
+.walk-W,
+.walk-SW .grant-name,
+.walk-NW .grant-name,
+.walk-W .grant-name { transform: scaleX(-1); }
+
 .walk-NE,
 .walk-SE,
-.walk-E { transform: scaleX(1); }
+.walk-E,
+.walk-NE .grant-name,
+.walk-SE .grant-name,
+.walk-E .grant-name { transform: scaleX(1); }
 
 .character {
   background-image: url('../assets/ghosts.svg');
   background-size: 310px;
   animation: bounce .3s linear infinite;
+}
+
+.grant-name {
+    position: absolute; top: -15px; right: 0;
+    font-size: 11px;
 }
 
 @keyframes bounce {
