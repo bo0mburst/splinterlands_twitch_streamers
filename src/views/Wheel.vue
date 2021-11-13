@@ -55,25 +55,30 @@
             <div class="row">
               <div class="col-md-6">
                 <strong>Add characters</strong>
-                <ul>
-                  <li v-for="(character, charIndex) in characters" :key="charIndex" class="row align-items-center">
-                    <div class="col-8 d-flex align-items-center p">
-                      <div class="form-check d-inline-block text-primary">
-                        <input class="form-check-input" type="radio" name="active-character" :id="`radio-${charIndex}`" :value="character" v-model="activeChar" @change="changeActiveChar">
-                        <label class="form-check-label" :for="`radio-${charIndex}`" />
+                <div class="form-group">
+                  <input type="text" class="form-control" @input="search($event)" placeholder="search name">
+                </div>
+                <ul class="list-unstyled">
+                  <li v-for="(character, charIndex) in characters" :key="charIndex" class="" :data-name="character.name">
+                    <div class="row align-items-center">
+                      <div class="col-8 d-flex align-items-center p">
+                        <div class="form-check d-inline-block text-primary">
+                          <input class="form-check-input" type="radio" name="active-character" :id="`radio-${charIndex}`" :value="character" v-model="activeChar" @change="changeActiveChar">
+                          <label class="form-check-label" :for="`radio-${charIndex}`" />
+                        </div>
+                        <input type="text" class="form-control" v-model="character.name" @change="setCharacterName">
                       </div>
-                      <input type="text" class="form-control" v-model="character.name" @change="setCharacterName">
-                    </div>
-                    <div class="col-4">
-                      <button class="btn btn-secondary p-1" type="button"  data-bs-toggle="modal" data-bs-target="#sprites" style="transform: scale(.5)" @click="charIdxToSetSprite = charIndex">
-                        <div v-if="character.sprite" class="grant-picker" :style="character.sprite"></div>
-                        <span v-else>Select sprite</span>
-                      </button>
-                      <button v-if="charIndex > 0" class="btn btn-link btn-sm text-danger" @click="removeChar(character.id)">x</button>
+                      <div class="col-4">
+                        <button class="btn btn-secondary p-1" type="button"  data-bs-toggle="modal" data-bs-target="#sprites" style="transform: scale(.5)" @click="charIdxToSetSprite = charIndex">
+                          <div v-if="character.sprite" class="grant-picker" :style="character.sprite"></div>
+                          <span v-else>Select sprite</span>
+                        </button>
+                        <button v-if="charIndex > 0" class="btn btn-link btn-sm text-danger" @click="removeChar(character.id)">x</button>
+                      </div>
                     </div>
                   </li>
                 </ul>
-                <div class="text-end px-3">
+                <div class="px-3">
                   <button class="btn btn-primary btn-sm" @click="addCharacter">Add</button>
                 </div>
               </div>
@@ -445,6 +450,17 @@ export default {
       this.activeChar = this.characters[0];
       this.changeActiveChar();
       this.characters = this.characters.filter(i => i.id !== id);
+    },
+
+    search (e) {
+      const li = this.$el.querySelectorAll('li[data-name]')
+
+      li.forEach((i) => {
+        i.style.display = ''
+        if (!String(i.dataset.name).toLowerCase().includes(String(e.target.value).toLowerCase())) {
+          i.style.display = 'none'
+        }
+      });
     }
   },
 
