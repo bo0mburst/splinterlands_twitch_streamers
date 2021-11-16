@@ -116,7 +116,7 @@ export default {
         background-color: #19171cc6;
         color: #fff;
         box-shadow: none;
-        transition: box-shadow 0.3s, transform 0.1s, background-color 0.3s;
+        transition: box-shadow 0.3s, background-color 0.3s;
     }
     .tile.active {
         z-index: 2;
@@ -125,7 +125,6 @@ export default {
     .tile.shuffled {
         background-color: #000 !important;
         color: #e1ad1d;
-        transform: translate(0, -10px) scale(1.2);
     }
     
     .flip-card {
