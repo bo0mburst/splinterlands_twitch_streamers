@@ -79,7 +79,7 @@ import Tiles from '@/components/Tiles.vue';
 export default {
   data(){
       return{
-          numberOfTiles: 100,
+          numberOfTiles: 0,
           listOfNames: '',
           prizes: [],
           tiles: [],
@@ -89,14 +89,12 @@ export default {
       }
   },
 
-  created () {
+  mounted () {
     this.init();
-    
   },
 
   watch: {
       numberOfTiles () {
-          
         this.generateWheelOptions()
         this.$nextTick(() =>{
             this.$refs['vue-wheel'].resetWheel();
@@ -114,13 +112,15 @@ export default {
       }
       this.listOfNames = names.join('\n')
 
-      this.numberOfTiles = this.listOfNames.length
+      this.numberOfTiles = names.length
 
 
      this.prizes = names
       this.generatePrizeItems(this.prizes);
       this.generateWheelOptions()
-
+      this.$nextTick(() =>{
+          this.$refs['vue-wheel'].resetWheel();
+      })
     },
 
     generateWheelOptions () {
