@@ -6,7 +6,8 @@
             v-for="(item, index) in items"
             :key="index"
             class="tile btn p-1 btn-dark d-flex align-items-center justify-content-center" :style="`${
-                items.length < 10 ? 'height: 200px; width: 50%;' :
+                items.length < 5 ? 'height: 200px; width: 50%;' :
+                items.length < 10 ? 'height: 190px; width: 30%;' :
                 items.length < 20 ? 'height: 180px; width: 20%;' :
                 items.length < 30 ? 'height: 150px; width: 10%;' :
                 items.length < 50 ? 'height: 100px; width: 10%;' :
