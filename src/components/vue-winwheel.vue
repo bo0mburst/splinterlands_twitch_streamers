@@ -81,6 +81,7 @@ export default {
 			}
 		}
   },
+  
   data () {
     return {
       loadingPrize: false,
@@ -169,10 +170,8 @@ export default {
     }
   },
   computed: {},
-  updated () {},
   mounted () {
     this.initSpin()
-    // this.resetWheel()
   },
   created () {}
 }

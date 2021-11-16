@@ -13,7 +13,7 @@
 
         <div class="ms-4 border border-warning p-1 rounded">
             <span class="text-warning me-2 small">#</span>
-            <input type="number" id="inputPassword6" class="form-control py-0 d-inline-block" style="width: 5rem;" min="0" :max="numberOfTiles" v-model="manualInput">
+            <input type="number" id="inputPassword6" class="form-control py-0 d-inline-block" style="width: 5rem;" min="0" max="100" v-model="manualInput">
             <button class="btn btn-sm btn-warning py-0 ms-2" @click="moveCharacterManually">Go</button>
         </div>
 
@@ -85,38 +85,16 @@
                 </div>
               </div>
               <div class="col-lg-6">
-                <strong>Tiles set</strong>
-                <div class="mb-3 d-flex flex-wrap">
-                    <div class="form-check d-inline-block text-primary me-3">
-                      <input class="form-check-input" type="radio" name="active-tiles" id="tileset1" value="prizes" v-model="activeTiles" @change="setActiveTiles">
-                      <label class="form-check-label" for="tileset1">Prizes</label>
-                    </div>
-                    <div class="form-check d-inline-block text-primary">
-                      <input class="form-check-input" type="radio" name="active-tiles" id="tileset2" value="names" v-model="activeTiles" @change="setActiveTiles">
-                      <label class="form-check-label" for="tileset2">Names</label>
-                    </div>
-                  <div class="ms-3">
-                    <span class="me-2 small"># of tiles</span>
-                    <input type="number" class="form-control py-0 d-inline-block" style="width: 5rem;" min="0" v-model="numberOfTiles" @change="changeNumberOfTiles">
+                <strong>Prize list</strong>
+                <p class="small text-muted">Enter your list of prizes here. 1 line per prize. If you have more than 1 of the same prize, you must enter it again.</p>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p>For Subscribers Only</p>
+                    <textarea class="w-100" style="min-height: 300px;" v-model="list" @change="saveList"></textarea>
                   </div>
-                </div>
-                <div  v-if="activeTiles === 'names'">
-                  <strong>Names</strong>
-                  <p>Enter list of names</p>
-                  <textarea class="w-100"  style="min-height: 300px;" v-model="listOfNames" @change="saveList"></textarea>
-                </div>
-                <div v-else>
-                  <strong>Prize list</strong>
-                  <p class="small text-muted">Enter your list of prizes here. 1 line per prize. If you have more than 1 of the same prize, you must enter it again.</p>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <p>For Subscribers Only</p>
-                      <textarea class="w-100" style="min-height: 300px;" v-model="list" @change="saveList"></textarea>
-                    </div>
-                    <div class="col-md-6">
-                      <p>For Followers</p>
-                      <textarea class="w-100" style="min-height: 300px;" v-model="list2" @change="saveList"></textarea>
-                    </div>
+                  <div class="col-md-6">
+                    <p>For Followers</p>
+                    <textarea class="w-100" style="min-height: 300px;" v-model="list2" @change="saveList"></textarea>
                   </div>
                 </div>
               </div>
@@ -180,8 +158,6 @@ import Grant from "@/components/Grant";
 export default {
   data(){
       return{
-          numberOfTiles: 100,
-          activeTiles: 'prizes',
           activeChar: null,
           charIdxToSetSprite: 0,
           characters: [{
@@ -258,8 +234,6 @@ export default {
 
   methods: {
     init () {
-      this.activeTiles = this.getActiveTiles()
-
       let prizes = this.getPrizes()
       if (!prizes.sub) {
         this.setStorage('nosleepgang-sub-prizes', [])
@@ -269,35 +243,12 @@ export default {
         this.setStorage('nosleepgang-ff-prizes', [])
         prizes.ff = []
       }
-      if (!prizes.names) {
-        this.setStorage('nosleepgang-names', [])
-        prizes.names = []
-      }
       this.list = prizes.sub.join('\n')
       this.list2 = prizes.ff.join('\n')
-      this.listOfNames = prizes.names.join('\n')
 
-      this.numberOfTiles = this.getNumberOfTiles()
-
-      if (this.activeTiles === 'prizes') this.prizes = this.isSubOnly ? prizes.sub : prizes.ff
-      else this.prizes = prizes.names
+      this.prizes = this.isSubOnly ? prizes.sub : prizes.ff
 
       this.generatePrizeItems(this.prizes);
-    },
-
-    getNumberOfTiles() {
-      const numberOfTiles =  localStorage.getItem('nosleepgang-number-of-tiles')
-      if (!numberOfTiles) {
-        this.setStorage('nosleepgang-number-of-tiles', 100)
-        return 100
-      }
-      return JSON.parse(numberOfTiles)
-    },
-
-    changeNumberOfTiles (e) {
-      this.setStorage('nosleepgang-number-of-tiles',e.target.value)
-      this.generatePrizeItems(this.prizes);
-      this.moveCharacter(0)
     },
 
     moveCharacter (e) {
@@ -321,21 +272,6 @@ export default {
           this.updateCharPos();
         }, 300)
       }
-    },
-
-    setActiveTiles () {
-      this.setStorage('nosleepgang-active-tileset', this.activeTiles)
-      this.init()
-    },
-
-    getActiveTiles () {
-      const activeTiles  = localStorage.getItem('nosleepgang-active-tileset')
-      if (!activeTiles) {
-        this.setStorage('nosleepgang-active-tileset', 'prizes')
-        return 'prizes'
-      }
-
-      return JSON.parse(activeTiles)
     },
 
     setActiveTile () {
@@ -400,19 +336,11 @@ export default {
     saveList () {
       const prizes = this.list.split('\n').filter(i => !!i)
       const prizes2 = this.list2.split('\n').filter(i => !!i)
-      const names = this.listOfNames.split('\n').filter(i => !!i)
       this.setStorage('nosleepgang-sub-prizes', prizes)
       this.setStorage('nosleepgang-ff-prizes', prizes2)
-      this.setStorage('nosleepgang-names', names)
       this.list = prizes.join('\n')
       this.list2 = prizes2.join('\n')
-      this.listOfNames = names.join('\n')
-      if (this.activeTiles === 'prizes') {
-        this.prizes = this.isSubOnly ? prizes : prizes2;
-      } else {
-        this.prizes = names
-      }
-
+      this.prizes = this.isSubOnly ? prizes : prizes2;
       this.generatePrizeItems(this.prizes);
     },
 
@@ -421,10 +349,10 @@ export default {
       if (!prizes || !prizes.length) return;
       let items = [];
       let shuffledPrizes = this.shuffle(prizes)
-      while(items.length <= this.numberOfTiles) {
+      while(items.length <= 100) {
         items = [...items, ...shuffledPrizes]
       }
-      this.tiles = items.slice(0, this.numberOfTiles);
+      this.tiles = items.slice(0, 100);
     },
 
     shuffleTiles () {
@@ -500,7 +428,7 @@ export default {
     },
 
     moveCharacterManually() {
-      this.manualInput = Math.max(0, Math.min(this.manualInput, this.numberOfTiles));
+      this.manualInput = Math.max(0, Math.min(this.manualInput, 100));
       this.active = 0
       this.moveCharacter(this.manualInput)
     },

@@ -45,6 +45,7 @@
         </div>
       </div>
     </div>
+    <audio src="@/assets/wow.mp3"></audio>
 </div>
 </template>
 <script>
@@ -88,6 +89,9 @@ export default {
                     '#0e9dd9'
                 ],
             });
+            const audio = document.querySelector("audio");
+            audio.volume = 1;
+            audio.play();
         },
         closeAndRemove (viewItem) {
             this.$emit('remove', viewItem);
