@@ -79,7 +79,6 @@ import Tiles from '@/components/Tiles.vue';
 export default {
   data(){
       return{
-          numberOfTiles: 0,
           listOfNames: '',
           prizes: [],
           tiles: [],
@@ -94,7 +93,7 @@ export default {
   },
 
   watch: {
-      numberOfTiles () {
+      prizes () {
         this.generateWheelOptions()
         this.$nextTick(() =>{
             this.$refs['vue-wheel'].resetWheel();
@@ -112,20 +111,13 @@ export default {
       }
       this.listOfNames = names.join('\n')
 
-      this.numberOfTiles = names.length
-
-
-     this.prizes = names
+      this.prizes = names
       this.generatePrizeItems(this.prizes);
-      this.generateWheelOptions()
-      this.$nextTick(() =>{
-          this.$refs['vue-wheel'].resetWheel();
-      })
     },
 
     generateWheelOptions () {
         let opt = []
-        for(let i = 0; i < this.numberOfTiles; i++) {
+        for(let i = 0; i < this.prizes.length; i++) {
             let text = String(i + 1)
             let randomColor = Math.floor(Math.random()*16777215).toString(16);
             if (i % 2 === 0) {
@@ -165,7 +157,6 @@ export default {
         this.setStorage('nosleepgang-names', names)
         this.listOfNames = names.join('\n')
         this.prizes = names
-        this.numberOfTiles = this.listOfNames.split('\n').length;
         this.generatePrizeItems(this.prizes);
     },
 
@@ -185,7 +176,7 @@ export default {
       this.generatePrizeItems(this.prizes);
       const tiles = this.$el.querySelectorAll('.tile');
       if(!tiles.length) return;
-      for(let i = 0; i < this.numberOfTiles; i++) {
+      for(let i = 0; i < this.prizes.length; i++) {
         setTimeout(() => {
           tiles[i].classList.add('shuffled')
 
