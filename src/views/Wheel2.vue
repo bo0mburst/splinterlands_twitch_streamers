@@ -36,10 +36,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <div class="mb-3">
-                <span class="me-2 small"># of tiles</span>
-                <input type="number" class="form-control py-0 d-inline-block" style="width: 5rem;" min="0" v-model="numberOfTiles" @change="changeNumberOfTiles">
-            </div>
             <strong>Names</strong>
             <p>Enter list of names</p>
             <textarea class="w-100"  style="min-height: 300px;" v-model="listOfNames" @change="saveList"></textarea>
@@ -114,7 +110,7 @@ export default {
       }
       this.listOfNames = names.join('\n')
 
-      this.numberOfTiles = this.getNumberOfTiles()
+      this.numberOfTiles = this.listOfNames.length
 
 
      this.prizes = names
@@ -145,20 +141,6 @@ export default {
         this.options = [...opt]
     },
 
-    getNumberOfTiles() {
-      const numberOfTiles =  localStorage.getItem('nosleepgang-number-of-tiles')
-      if (!numberOfTiles) {
-        this.setStorage('nosleepgang-number-of-tiles', 100)
-        return 100
-      }
-      return JSON.parse(numberOfTiles)
-    },
-
-    changeNumberOfTiles (e) {
-      this.setStorage('nosleepgang-number-of-tiles',e.target.value)
-      this.generatePrizeItems(this.prizes);
-    },
-
     setActiveTile (e) {
       this.activeTile = e;
     },
@@ -179,6 +161,7 @@ export default {
         this.setStorage('nosleepgang-names', names)
         this.listOfNames = names.join('\n')
         this.prizes = names
+        this.numberOfTiles = this.listOfNames.split('\n').length;
         this.generatePrizeItems(this.prizes);
     },
 
@@ -187,10 +170,11 @@ export default {
       if (!prizes || !prizes.length) return;
       let items = [];
       let shuffledPrizes = this.shuffle(prizes)
-      while(items.length <= this.numberOfTiles) {
+      let length = this.listOfNames.split('\n').length;
+      while(items.length <= length) {
         items = [...items, ...shuffledPrizes]
       }
-      this.tiles = items.slice(0, this.numberOfTiles);
+      this.tiles = items.slice(0, length);
     },
 
     shuffleTiles () {
