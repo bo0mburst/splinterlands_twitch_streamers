@@ -1,11 +1,17 @@
 <template>
 
 <div>
-    <div class="d-flex justify-content-center flex-wrap p-2">
+    <div class="d-flex flex-wrap p-2">
         <button
             v-for="(item, index) in items"
             :key="index"
-            class="tile btn p-1 btn-dark d-flex align-items-center justify-content-center" style="height: 60px; width: 10%;"
+            class="tile btn p-1 btn-dark d-flex align-items-center justify-content-center" :style="`${
+                items.length < 10 ? 'height: 200px; width: 50%;' :
+                items.length < 20 ? 'height: 180px; width: 20%;' :
+                items.length < 30 ? 'height: 150px; width: 10%;' :
+                items.length < 50 ? 'height: 100px; width: 10%;' :
+                'height: 60px; width: 10%;'
+            }`"
             @click="view(index, item)"
             :class="{'active' : active == index + 1 }"
             data-bs-toggle="modal" data-bs-target="#prizeModal"
@@ -90,7 +96,7 @@ export default {
                 ],
             });
             const audio = document.querySelector("audio");
-            audio.volume = 1;
+            audio.volume = .6;
             audio.play();
         },
         closeAndRemove (viewItem) {

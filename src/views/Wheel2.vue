@@ -10,7 +10,11 @@
       </div>
       <div class="row w-100 mx-0">
         <div class="col-md-4">
-            <vue-win-Wheel :segments="options"  @change="setActiveTile($event)" ref="vue-wheel" />
+            <vue-win-Wheel :segments="options"  @change="setActiveTile($event)" ref="vue-wheel" :style="`${
+              options.length < 20 ? `transform: scale(1.2)` : `transform: scale(1)`}; transform-origin: top`"
+              v-slot:default="{value}">
+              <span class="text-light">{{String(value).toLowerCase()}}</span>
+            </vue-win-Wheel>
         </div>
 
         <div class="col-md-8">
