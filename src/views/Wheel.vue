@@ -4,7 +4,7 @@
     <day-night/>
     <div class="position-relative min-vh-100 bg-dark">
       <div class="px-3 mb-3 d-flex flex-wrap align-items-center justify-content-end">
-        <div class="form-check form-switch">
+        <div class="form-check form-switch" v-if="activeTiles === 'prizes'">
           <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked v-model="isSubOnly" @change="init">
           <label class="form-check-label" :class="isSubOnly ? 'text-warning' :'text-light'" for="flexSwitchCheckChecked">
             {{isSubOnly ? 'Subscribers only prizes' : 'Followers prizes'}}
@@ -13,7 +13,7 @@
 
         <div class="ms-4 border border-warning p-1 rounded">
             <span class="text-warning me-2 small">#</span>
-            <input type="number" id="inputPassword6" class="form-control py-0 d-inline-block" style="width: 5rem;" min="0" max="100" v-model="manualInput">
+            <input type="number" id="inputPassword6" class="form-control py-0 d-inline-block" style="width: 5rem;" min="0" :max="numberOfTiles" v-model="manualInput">
             <button class="btn btn-sm btn-warning py-0 ms-2" @click="moveCharacterManually">Go</button>
         </div>
 
@@ -29,7 +29,7 @@
             <vue-win-Wheel :segments="options" @change="moveCharacter" ref="vue-wheel" />
         </div>
 
-        <div class="col-md-8 d-flex flex-column justify-content-center">
+        <div class="col-md-8">
           <tiles
             v-if="tiles.length"
             :active="activeTile"
@@ -53,46 +53,70 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-lg-6">
                 <strong>Add characters</strong>
                 <div class="form-group">
                   <input type="text" class="form-control" @input="search($event)" placeholder="search name">
                 </div>
-                <ul class="list-unstyled">
-                  <li v-for="(character, charIndex) in characters" :key="charIndex" class="" :data-name="character.name">
-                    <div class="row align-items-center">
-                      <div class="col-8 d-flex align-items-center p">
-                        <div class="form-check d-inline-block text-primary">
-                          <input class="form-check-input" type="radio" name="active-character" :id="`radio-${charIndex}`" :value="character" v-model="activeChar" @change="changeActiveChar">
-                          <label class="form-check-label" :for="`radio-${charIndex}`" />
+                <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;">
+                  <ul class="list-unstyled">
+                    <li v-for="(character, charIndex) in characters" :key="charIndex" class="" :data-name="character.name">
+                      <div class="row align-items-center">
+                        <div class="col-8 d-flex align-items-center p">
+                          <div class="form-check d-inline-block text-primary">
+                            <input class="form-check-input" type="radio" name="active-character" :id="`radio-${charIndex}`" :value="character" v-model="activeChar" @change="changeActiveChar">
+                            <label class="form-check-label" :for="`radio-${charIndex}`" />
+                          </div>
+                          <input type="text" class="form-control" v-model="character.name" @change="setCharacterName">
                         </div>
-                        <input type="text" class="form-control" v-model="character.name" @change="setCharacterName">
+                        <div class="col-4">
+                          <button class="btn btn-secondary p-1" type="button"  data-bs-toggle="modal" data-bs-target="#sprites" style="transform: scale(.5)" @click="charIdxToSetSprite = charIndex">
+                            <div v-if="character.sprite" class="grant-picker" :style="character.sprite"></div>
+                            <span v-else>Select sprite</span>
+                          </button>
+                          <button v-if="charIndex > 0" class="btn btn-link btn-sm text-danger" @click="removeChar(character.id)">x</button>
+                        </div>
                       </div>
-                      <div class="col-4">
-                        <button class="btn btn-secondary p-1" type="button"  data-bs-toggle="modal" data-bs-target="#sprites" style="transform: scale(.5)" @click="charIdxToSetSprite = charIndex">
-                          <div v-if="character.sprite" class="grant-picker" :style="character.sprite"></div>
-                          <span v-else>Select sprite</span>
-                        </button>
-                        <button v-if="charIndex > 0" class="btn btn-link btn-sm text-danger" @click="removeChar(character.id)">x</button>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-                <div class="px-3">
+                    </li>
+                  </ul>
+                </div>
+                <div class="px-3 mb-4">
                   <button class="btn btn-primary btn-sm" @click="addCharacter">Add</button>
                 </div>
               </div>
-              <div class="col-md-6">
-                <strong>Prize list</strong>
-                <p class="small text-muted">Enter your list of prizes here. 1 line per prize. If you have more than 1 of the same prize, you must enter it again.</p>
-                <div class="row">
-                  <div class="col-md-6">
-                    <p>For Subscribers Only</p>
-                    <textarea class="w-100" style="min-height: 300px;" v-model="list" @change="saveList"></textarea>
+              <div class="col-lg-6">
+                <strong>Tiles set</strong>
+                <div class="mb-3 d-flex flex-wrap">
+                    <div class="form-check d-inline-block text-primary me-3">
+                      <input class="form-check-input" type="radio" name="active-tiles" id="tileset1" value="prizes" v-model="activeTiles" @change="setActiveTiles">
+                      <label class="form-check-label" for="tileset1">Prizes</label>
+                    </div>
+                    <div class="form-check d-inline-block text-primary">
+                      <input class="form-check-input" type="radio" name="active-tiles" id="tileset2" value="names" v-model="activeTiles" @change="setActiveTiles">
+                      <label class="form-check-label" for="tileset2">Names</label>
+                    </div>
+                  <div class="ms-3">
+                    <span class="me-2 small"># of tiles</span>
+                    <input type="number" class="form-control py-0 d-inline-block" style="width: 5rem;" min="0" v-model="numberOfTiles" @change="changeNumberOfTiles">
                   </div>
-                  <div class="col-md-6">
-                    <p>For Followers</p>
-                    <textarea class="w-100" style="min-height: 300px;" v-model="list2" @change="saveList"></textarea>
+                </div>
+                <div  v-if="activeTiles === 'names'">
+                  <strong>Names</strong>
+                  <p>Enter list of names</p>
+                  <textarea class="w-100"  style="min-height: 300px;" v-model="listOfNames" @change="saveList"></textarea>
+                </div>
+                <div v-else>
+                  <strong>Prize list</strong>
+                  <p class="small text-muted">Enter your list of prizes here. 1 line per prize. If you have more than 1 of the same prize, you must enter it again.</p>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p>For Subscribers Only</p>
+                      <textarea class="w-100" style="min-height: 300px;" v-model="list" @change="saveList"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <p>For Followers</p>
+                      <textarea class="w-100" style="min-height: 300px;" v-model="list2" @change="saveList"></textarea>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -156,6 +180,8 @@ import Grant from "@/components/Grant";
 export default {
   data(){
       return{
+          numberOfTiles: 100,
+          activeTiles: 'prizes',
           activeChar: null,
           charIdxToSetSprite: 0,
           characters: [{
@@ -167,6 +193,7 @@ export default {
           isSubOnly: true,
           list: '',
           list2: '',
+          listOfNames: '',
           prizes: [],
           tiles: [],
           activeTile: 0,
@@ -231,19 +258,46 @@ export default {
 
   methods: {
     init () {
+      this.activeTiles = this.getActiveTiles()
+
       let prizes = this.getPrizes()
       if (!prizes.sub) {
-        this.setPrizes('nosleepgang-sub-prizes', [])
+        this.setStorage('nosleepgang-sub-prizes', [])
         prizes.sub = []
       }
       if (!prizes.ff) {
-        this.setPrizes('nosleepgang-ff-prizes', [])
+        this.setStorage('nosleepgang-ff-prizes', [])
         prizes.ff = []
       }
-      this.prizes = this.isSubOnly ? prizes.sub : prizes.ff
+      if (!prizes.names) {
+        this.setStorage('nosleepgang-names', [])
+        prizes.names = []
+      }
       this.list = prizes.sub.join('\n')
       this.list2 = prizes.ff.join('\n')
+      this.listOfNames = prizes.names.join('\n')
+
+      this.numberOfTiles = this.getNumberOfTiles()
+
+      if (this.activeTiles === 'prizes') this.prizes = this.isSubOnly ? prizes.sub : prizes.ff
+      else this.prizes = prizes.names
+
       this.generatePrizeItems(this.prizes);
+    },
+
+    getNumberOfTiles() {
+      const numberOfTiles =  localStorage.getItem('nosleepgang-number-of-tiles')
+      if (!numberOfTiles) {
+        this.setStorage('nosleepgang-number-of-tiles', 100)
+        return 100
+      }
+      return JSON.parse(numberOfTiles)
+    },
+
+    changeNumberOfTiles (e) {
+      this.setStorage('nosleepgang-number-of-tiles',e.target.value)
+      this.generatePrizeItems(this.prizes);
+      this.moveCharacter(0)
     },
 
     moveCharacter (e) {
@@ -267,6 +321,21 @@ export default {
           this.updateCharPos();
         }, 300)
       }
+    },
+
+    setActiveTiles () {
+      this.setStorage('nosleepgang-active-tileset', this.activeTiles)
+      this.init()
+    },
+
+    getActiveTiles () {
+      const activeTiles  = localStorage.getItem('nosleepgang-active-tileset')
+      if (!activeTiles) {
+        this.setStorage('nosleepgang-active-tileset', 'prizes')
+        return 'prizes'
+      }
+
+      return JSON.parse(activeTiles)
     },
 
     setActiveTile () {
@@ -316,12 +385,14 @@ export default {
     getPrizes () {
       const prizes = localStorage.getItem('nosleepgang-sub-prizes')
       const prizes2 = localStorage.getItem('nosleepgang-ff-prizes')
+      const _names = localStorage.getItem('nosleepgang-names')
       const sub = prizes ? JSON.parse(prizes) : '';
       const ff = prizes2 ? JSON.parse(prizes2) : '';
-      return {sub, ff};
+      const names = _names ? JSON.parse(_names) : '';
+      return {sub, ff, names};
     },
 
-    setPrizes (key, val) {
+    setStorage (key, val) {
       let prizes = JSON.stringify(val);
       localStorage.setItem(key, prizes)
     },
@@ -329,22 +400,31 @@ export default {
     saveList () {
       const prizes = this.list.split('\n').filter(i => !!i)
       const prizes2 = this.list2.split('\n').filter(i => !!i)
-      this.setPrizes('nosleepgang-sub-prizes', prizes)
-      this.setPrizes('nosleepgang-ff-prizes', prizes2)
+      const names = this.listOfNames.split('\n').filter(i => !!i)
+      this.setStorage('nosleepgang-sub-prizes', prizes)
+      this.setStorage('nosleepgang-ff-prizes', prizes2)
+      this.setStorage('nosleepgang-names', names)
       this.list = prizes.join('\n')
       this.list2 = prizes2.join('\n')
-      this.prizes = this.isSubOnly ? prizes : prizes2;
+      this.listOfNames = names.join('\n')
+      if (this.activeTiles === 'prizes') {
+        this.prizes = this.isSubOnly ? prizes : prizes2;
+      } else {
+        this.prizes = names
+      }
+
       this.generatePrizeItems(this.prizes);
     },
 
     generatePrizeItems (prizes) {
+      this.tiles = []
       if (!prizes || !prizes.length) return;
       let items = [];
       let shuffledPrizes = this.shuffle(prizes)
-      while(items.length <= 100) {
+      while(items.length <= this.numberOfTiles) {
         items = [...items, ...shuffledPrizes]
       }
-      this.tiles = items.slice(0, 100);
+      this.tiles = items.slice(0, this.numberOfTiles);
     },
 
     shuffleTiles () {
@@ -410,17 +490,17 @@ export default {
       let idx = this.prizes.findIndex(i => i === e);
       this.prizes.splice(idx, 1);
       if (this.isSubOnly) {
-        this.setPrizes('nosleepgang-sub-prizes', this.prizes)
+        this.setStorage('nosleepgang-sub-prizes', this.prizes)
         this.list = this.prizes.join('\n')
       } else {
-        this.setPrizes('nosleepgang-ff-prizes', this.prizes)
+        this.setStorage('nosleepgang-ff-prizes', this.prizes)
         this.list2 = this.prizes.join('\n')
       }
       this.generatePrizeItems(this.prizes);
     },
 
     moveCharacterManually() {
-      this.manualInput = Math.max(0, Math.min(this.manualInput, 100));
+      this.manualInput = Math.max(0, Math.min(this.manualInput, this.numberOfTiles));
       this.active = 0
       this.moveCharacter(this.manualInput)
     },
@@ -437,10 +517,12 @@ export default {
     addCharacter () {
       const name = this.getRandomString(5)
       const id = `${Math.floor(Math.random() * 100)}${Date.now()}`
+      const grantPicker = this.$el.querySelectorAll('.grant-picker');
+      const spritePos = grantPicker[Math.floor(Math.random() * 20)].style.backgroundPosition;
       this.characters.push({
         id,
         name,
-        sprite: 'background-position: 0 0;',
+        sprite: `background-position: ${spritePos}`,
         pos: 0
       })
       localStorage.setItem('nosleepgang-chars', JSON.stringify(this.characters))
