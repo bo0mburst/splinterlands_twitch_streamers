@@ -214,6 +214,7 @@ export default {
     removePrize (e) {
         let idx = this.prizes.findIndex(i => i === e);
         this.prizes.splice(idx, 1);
+        this.prizes = this.prizes.slice()
         this.setStorage('nosleepgang-names', this.prizes)
         this.listOfNames = this.prizes.join('\n')
         this.generatePrizeItems(this.prizes);
