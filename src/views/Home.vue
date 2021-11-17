@@ -10,7 +10,7 @@
               <div class="px-3 col-md-6 text-center">
                   <img class="w-100" src="@/assets/mascott.png" alt="">
                   <div class="text-center mt-3">
-                      <a class="h3 text-secondary text-decoration-none" href="https://discord.gg/m34Em3ze" aria-label="discord">Join our discord channel</a>
+                      <a class="h3 text-secondary text-decoration-none" href="https://discord.gg/bQcva2bCXJ" aria-label="discord">Join our discord channel</a>
                   </div>
               </div>
               <div class="mt-5 mt-md-0 d-fkex flex-colum pb-md-5 mb-md-5 w-100 h-100 overflow-hidden">
