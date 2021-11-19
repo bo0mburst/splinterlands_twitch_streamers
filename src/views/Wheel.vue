@@ -1,7 +1,7 @@
 <template>
   <div id="wheel" class="min-vh-100">
     <grant :coords="coords" :backgroundPos="activeChar ? activeChar.sprite : ''" @stop="setActiveTile" :title="activeChar ? activeChar.name : ''"/>
-    <day-night/>
+  
     <div class="position-relative min-vh-100 bg-dark">
       <div class="px-3 mb-3 d-flex flex-wrap align-items-center justify-content-end">
         <div class="form-check form-switch" v-if="activeTiles === 'prizes'">
@@ -152,7 +152,6 @@
 <script>
 import VueWinWheel from '@/components/vue-winwheel.vue';
 import Tiles from '@/components/Tiles.vue';
-import DayNight from '@/components/DayNight.vue';
 import Grant from "@/components/Grant";
 
 export default {
@@ -477,7 +476,6 @@ export default {
   components: {
     VueWinWheel,
     Tiles,
-    DayNight,
     Grant
   }
 }

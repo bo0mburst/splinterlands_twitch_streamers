@@ -1,18 +1,10 @@
 <template>
-  <div id="app">
+  <div id="app" class="bg-black">
     <router-view/>
   </div>
 </template>
 
 <style>
-#app {
-  background-image: url('./assets/moon.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: bottom;
-  background-attachment: fixed;
-}
-
 @media (min-width: 768px) {
     .streamers { height: 100vh; }
   }
@@ -24,7 +16,8 @@
 
   .container {  max-width: 800px !important; }
 
-  .bg-dark { background-color: rgba(25, 23, 28, 0.775) !important; }
+  .bg-black { background-color: #171617 !important; }
+  .bg-dark { background-color: #232222 !important; }
 
   .text-primary { color: #6441a4 !important; }
   .bg-primary { background-color: #6441a4 !important; }
@@ -35,19 +28,24 @@
 
   .text-secondary { color: #0e9dd9 !important; }
 
-  a:hover { background-color: #333 !important; }
+  a:hover { background-color: #333 !important;}
   
   *::-webkit-scrollbar-track {
       -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-      background-color: #0e9dd9;
+      background-color: #171617;
   }
 
   *::-webkit-scrollbar {
-      width: 6px;
-      background-color: #0e9dd9;
+      width: 8px;
+      height: 8px;
+      background-color: transparent;
   }
 
-  *::-webkit-scrollbar-thumb { background-color: #6441a4; }
+  *::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 5px;
+    border: 2px solid #555;
+  }
 
   #confetti-canvas { z-index: 1051; }
 </style>

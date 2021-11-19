@@ -1,98 +1,72 @@
 <template>
-  <div id="home" class="bg-black">
-    <section class="streamers py-3 d-flex flex-column">
-      <header class="container text-white">
-          <h1 class="display-5">Twitch Streamers</h1>
-      </header>
-
-      <div class="container py-3 px-0 bg-dark overflow-hidden rounded">
-          <div class="d-md-flex h-100">
-              <div class="px-3 col-md-6 text-center">
-                  <img class="w-100" src="@/assets/mascott.png" alt="">
-                  <div class="text-center mt-3">
-                      <a class="h3 text-secondary text-decoration-none" href="https://discord.gg/bQcva2bCXJ" aria-label="discord">Join our discord channel</a>
-                  </div>
-              </div>
-              <div class="mt-5 mt-md-0 d-fkex flex-colum pb-md-5 mb-md-5 w-100 h-100 overflow-hidden">
-                  <div class="px-3 d-flex align-items-center">
-                      <div class="h3 text-primary">
-                          <i class="fa fa-twitch"></i>
-                      </div>
-                      <h4 class="text-secondary ms-3">Join Us!</h4>
-                  </div>
-                  <div class="h-100 overflow-auto">
-                    <div id="streamers" class="list-group">
-                      <div class="mt-5 pt-5 text-center"  v-if="!streamers.length">
-                        <div class="spinner-border text-warning" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                      </div>
-
-                      <div
-                        v-for="(GoogleSpreadsheetRow, index) in streamers"
-                        :key="index"
-                        class="p-1 mt-1 list-group-item bg-dark">
-                          <div class="p-2 rounded d-flex flex-wrap align-items-center text-decoration-none text-warning">
-                              <img :src="`https://robohash.org/${GoogleSpreadsheetRow.NAME}?size=30x30`"  class="rounded-circle border">
-                              <div class="ms-3">
-                                  <div class="h6 mb-0 d-none d-md-block">{{GoogleSpreadsheetRow.NAME}}</div>
-                                  <small class="text-muted">
-                                      @{{GoogleSpreadsheetRow.TWITCH.split('/').pop()}}
-                                  </small>
-                              </div>
-                              <a class="ms-auto btn btn-sm py-0 btn-primary"  :href="GoogleSpreadsheetRow.TWITCH" target="blank">
-                                  visit
-                              </a>
-                          </div>
-                      </div>
+  <div class="min-vh-100 text-light">
+    <div class= "h-100 p-3 p-md-0 side-bar bg-black">
+        <div class="px-2 py-2 text-danger position-sticky top-0 bg-black text-center font-monospace fw-bold fs-3">No Sleep Gang</div>
+        <ul class="list-unstyled bg-dark">
+            <li v-for="(GoogleSpreadsheetRow, index) in streamers" :key="index">
+                <a v-bind:href="GoogleSpreadsheetRow.TWITCH" target="blank" class="text-light text-decoration-none px-3 py-2 d-flex flex-wrap align-items-start">
+                    <img :src="`https://robohash.org/${GoogleSpreadsheetRow.NAME}?size=30x30`"  class="rounded-circle border me-2">
+                    <div>
+                        {{GoogleSpreadsheetRow.NAME}}
+                        <span class="text-muted d-block text-decoration-none">@{{GoogleSpreadsheetRow.TWITCH.split('/').pop()}}</span>
                     </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-    </section>
-    
+                </a>
+            </li>
+        </ul>
+    </div>
+    <main class="ps-md-3 bg-black">
+        <div class="px-3 py-2">
+            <div class="latest-post text-center text-md-start">
+                <div class="mb-4 d-md-flex flex-wrap align-items-center justify-content-between">
+                    <a class="px-2 text-light text-decoration-none d-inline-flex align-items-center" href="https://discord.gg/bQcva2bCXJ" target="blank" aria-label="discord">
+                        <small>Join us for more</small><img class="ms-2" src="@/assets/discord-logo.png" alt="" height="30">
+                    </a>
 
-    <section class="container py-5 px-0" v-if="posts.length">
-      <div class="p-3 bg-dark">
-        <h4 class="display-5 px-2 pb-4 text-secondary border-bottom">Latest Posts</h4>
-        <link-prevue
-          v-for="(GoogleSpreadsheetRow, index) in posts"
-          :key="index"
-          :url="GoogleSpreadsheetRow.LINK"
-          class="w-100">
-          <template slot-scope="props">
-            <div class="card mb-3 bg-dark">
-              <div class="row g-0">
-                <div class="col-md-4 d-flex align-items-center">
-                  <img class="img-fluid rounded-start" :src="props.img" :alt="props.title" v-if="props.img"/>
-                  <div v-else class="img-fluid p-3 text-center text-muted">No image available</div>
+                    <div class="px-2 d-md-flex bg-black flex-wrap align-items-center">
+                        <div class="me-4 small mb-2 my-2">Play with us : </div>
+                        <a href="https://splinterlands.com" title="https://splinterlands.com" target="blank" class="bg-dark py-1 px-3 my-2 d-inline-block small me-2 rounded rounded-pill text-light text-decoration-none">Splinterlands</a>
+                        <a href="https://www.risingstargame.com" title="https://www.risingstargame.com" target="blank" class="bg-dark py-1 px-3 my-2 d-inline-block small me-2 rounded rounded-pill text-light text-decoration-none">Rising Stargame</a>
+                        <a href="https://fadedmonsuta.io" title="https://fadedmonsuta.io" target="blank" class="bg-dark py-1 px-3 my-2 d-inline-block small me-2 rounded rounded-pill text-light text-decoration-none">Faded Monsuta</a>
+                        <a href="https://www.streamraiders.com" title="https://www.streamraiders.com" target="blank" class="bg-dark py-1 px-3 my-2 d-inline-block small me-2 rounded rounded-pill text-light text-decoration-none">Stream Raiders</a>
+                    </div>
                 </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h4 class="card-title text-light">{{props.title || GoogleSpreadsheetRow.TITLE}}</h4>
-                    <p class="text-secondary">{{props.description}}</p>
-                    <a v-bind:href="props.url" class="btn btn-sm btn-primary">More</a>
-                  </div>
+
+                <div class="row" v-if="posts.length">
+                    <link-prevue
+                        v-for="(GoogleSpreadsheetRow, index) in posts"
+                        :key="index"
+                        :url="GoogleSpreadsheetRow.LINK"
+                        class="col-lg-6"
+                    >
+                    <template slot-scope="props">
+                        <div class="card mb-3 bg-dark post">
+                            <div class="row g-0">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <a v-bind:href="props.url" target="blank" class="rounded-start thumbnail text-decoration-none" :style="`background-image: url('${props.img}')`" v-if="props.img"></a>
+                                    <div v-else class="img-fluid p-3 text-center text-muted">No image available</div>
+                                </div>
+                                <div class="col-md-8">
+                                <div class="card-body">
+                                    <a v-bind:href="props.url" target="blank" class="text-decoration-none">
+                                        <p class="card-title mb-0 text-light">{{limitText(props.title || GoogleSpreadsheetRow.TITLE, 80)}}</p>
+                                        <p class="text-muted mb-0 text-nowrap text-truncate">{{props.description || ''}}</p>
+                                    </a>
+                                    <div class="mt-auto text-muted small text-end">
+                                        {{GoogleSpreadsheetRow.AUTHOR}}
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    </link-prevue>
                 </div>
-              </div>
+                <div v-else class="py-5">
+                    <p class="text-muted">No latest posts</p>
+                </div>
             </div>
-          </template>
-        </link-prevue>
-        <!-- <ul class="list-unstyled list-group rounded">
-          <li
-            v-for="(GoogleSpreadsheetRow, index) in posts"
-            :key="index"
-            class="list-group-item bg-transparent"
-          >
-            <div class="text-warning">{{ GoogleSpreadsheetRow.AUTHOR }}</div>
-            <div class="text-light">{{ GoogleSpreadsheetRow.TITLE }} <a class="text-primary text-wrap text-break" :href="GoogleSpreadsheetRow.LINK">View</a></div>
-          </li>
-        </ul> -->
-      </div>
-    </section>
-
-    <small class="badge bg-warning text-dark opacity-25" id="brand">bo0mburst</small>
+        </div>
+    </main>
   </div>
 </template>
 
@@ -124,6 +98,17 @@ export default {
   },
 
   methods: {
+    limitText (text, limit) {
+        if (text && text.length > limit) {
+            return `${String(text).slice(0, limit - 3)}...`
+        }   
+        return text;
+    },
+    getAuthorLink (link) {
+        if(!link) return;
+        const split = link.split('/').slice(0, -1).join('/');
+        return split;
+    },
     async loadData () {
       const doc = new GoogleSpreadsheet(SHEET_ID);
       await doc.useServiceAccountAuth(CREDENTIALS);
@@ -137,15 +122,45 @@ export default {
 }
 </script>
 
-<style>
-  #home {
-    position: relative;
-  }
+<style scoped>
 
-  #brand {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    transform: scale(.8);
-  }
+@media (min-width: 768px) {
+    .side-bar {
+        width: 300px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+    }
+    main {
+        margin-left: 300px;
+    }
+    .post {
+        height: 130px;
+    }
+}
+
+.side-bar {
+    overflow: hidden;
+}
+
+.side-bar:hover {
+    overflow-y: auto;
+}
+
+
+.list-unstyled > li > div:hover {
+    cursor: pointer;
+}
+
+.list-unstyled > li > div:hover {
+    background-color: #6441a4;
+}
+
+.thumbnail {
+    background-position: center;
+    background-size: cover;
+    height: 130px;
+    width: 100%;
+}
 </style>
