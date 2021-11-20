@@ -28,7 +28,7 @@
           <div class="modal-body">
             <div class="text-center text-warning h3 mb-5">Congratulations!!!</div>
             <div class="d-flex align-items-center justify-content-center">
-                <div class="flip-card" @click="open" :class="{'open' : isOpen}">
+                <div class="flip-card" @click="open" :class="{'open' : isOpen}" @mouseover="cardHover" @mouseout="cardBlur">
                     <div class="flip-card-inner">
                         <div class="flip-card-front bg-primary d-flex align-items-center justify-content-center">
                             <!-- <div class="display-3 text-light">
@@ -52,7 +52,8 @@
         </div>
       </div>
     </div>
-    <audio src="@/assets/wow.mp3"></audio>
+    <audio src="@/assets/wow.mp3" id="audio-wow"></audio>
+    <audio src="@/assets/drum-roll.mp3" id="audio-roll"></audio>
 </div>
 </template>
 <script>
@@ -96,7 +97,8 @@ export default {
                     '#0e9dd9'
                 ],
             });
-            const audio = document.querySelector("audio");
+            this.cardBlur();
+            const audio = document.querySelector("#audio-wow");
             audio.volume = .6;
             audio.play();
         },
@@ -107,6 +109,18 @@ export default {
 
         close () {
             this.$confetti.stop()
+        },
+
+        cardHover () {
+            if(this.isOpen) return;
+            const audio = document.querySelector("#audio-roll");
+            audio.volume = .6;
+            audio.play();
+        },
+        cardBlur () {
+            const audio = document.querySelector("#audio-roll");
+            audio.pause();
+            audio.currentTime = 0;
         }
     }
 }
