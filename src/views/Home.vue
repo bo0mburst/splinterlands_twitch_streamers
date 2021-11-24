@@ -18,9 +18,14 @@
         <div class="px-3 py-2">
             <div class="latest-post text-center text-md-start">
                 <div class="mb-4 d-md-flex flex-wrap align-items-center justify-content-between">
-                    <a class="px-2 text-light text-decoration-none d-inline-flex align-items-center" href="https://discord.gg/bQcva2bCXJ" target="blank" aria-label="discord">
-                        <small>Join us for more</small><img class="ms-2" src="@/assets/discord-logo.png" alt="" height="30">
-                    </a>
+                    <div>
+                        <a class="px-2 text-light text-decoration-none d-inline-flex align-items-center" href="https://discord.gg/bQcva2bCXJ" target="blank" aria-label="discord">
+                            <small>NSG</small><img class="ms-2" src="@/assets/discord-logo.png" alt="" height="30">
+                        </a>
+                        <a class="px-2 text-light text-decoration-none d-inline-flex align-items-center" href="https://discord.gg/z83AaZuc6z" target="blank" aria-label="discord">
+                            <small>NSG-Show</small><img class="ms-2" src="@/assets/discord-logo.png" alt="" height="30">
+                        </a>
+                    </div>
 
                     <div class="px-2 d-md-flex bg-black flex-wrap align-items-center">
                         <div class="me-4 small mb-2 my-2">Play with us : </div>
