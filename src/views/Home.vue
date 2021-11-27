@@ -37,7 +37,7 @@
                 </div>
 
                 <div class="row" v-if="posts.length">
-                    <link-prevue
+                    <!-- <link-prevue
                         v-for="(GoogleSpreadsheetRow, index) in posts"
                         :key="index"
                         :url="GoogleSpreadsheetRow.LINK"
@@ -64,7 +64,23 @@
                             </div>
                         </div>
                     </template>
-                    </link-prevue>
+                    </link-prevue> -->
+                    <div
+                        v-for="(GoogleSpreadsheetRow, index) in posts"
+                        :key="index"
+                        class="col-lg-6"
+                    >
+                        <div class="card mb-3 bg-dark">
+                            <div class="card-body">
+                                <a v-bind:href="GoogleSpreadsheetRow.LINK" target="blank" class="text-decoration-none">
+                                    <p class="card-title mb-0 text-light">{{limitText( GoogleSpreadsheetRow.TITLE, 80)}}</p>
+                                </a>
+                                <div class="mt-auto text-muted small text-end">
+                                    {{GoogleSpreadsheetRow.AUTHOR}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div v-else class="py-5">
                     <p class="text-muted">No latest posts</p>
@@ -77,7 +93,7 @@
 
 <script>
 import { GoogleSpreadsheet } from 'google-spreadsheet';
-import LinkPrevue from 'link-prevue'
+// import LinkPrevue from 'link-prevue'
 
 const SHEET_ID = process.env.VUE_APP_SHEET_ID;
 const CREDENTIALS = {
@@ -88,7 +104,7 @@ export default {
   name: 'Home',
   
   components: {
-    LinkPrevue
+    // LinkPrevue
   },
   
   data () {
