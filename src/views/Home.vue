@@ -37,46 +37,27 @@
                 </div>
 
                 <div class="row" v-if="posts.length">
-                    <!-- <link-prevue
-                        v-for="(GoogleSpreadsheetRow, index) in posts"
-                        :key="index"
-                        :url="GoogleSpreadsheetRow.LINK"
-                        class="col-lg-6"
-                    >
-                    <template slot-scope="props">
-                        <div class="card mb-3 bg-dark post">
-                            <div class="row g-0">
-                                <div class="col-md-4 d-flex align-items-center">
-                                    <a v-bind:href="props.url" target="blank" class="rounded-start thumbnail text-decoration-none" :style="`background-image: url('${props.img}')`" v-if="props.img"></a>
-                                    <div v-else class="img-fluid p-3 text-center text-muted">No image available</div>
-                                </div>
-                                <div class="col-md-8">
-                                <div class="card-body">
-                                    <a v-bind:href="props.url" target="blank" class="text-decoration-none">
-                                        <p class="card-title mb-0 text-light">{{limitText(props.title || GoogleSpreadsheetRow.TITLE, 80)}}</p>
-                                        <p class="text-muted mb-0 text-nowrap text-truncate">{{props.description || ''}}</p>
-                                    </a>
-                                    <div class="mt-auto text-muted small text-end">
-                                        {{GoogleSpreadsheetRow.AUTHOR}}
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                    </link-prevue> -->
                     <div
                         v-for="(GoogleSpreadsheetRow, index) in posts"
                         :key="index"
                         class="col-lg-6"
                     >
-                        <div class="card mb-3 bg-dark">
-                            <div class="card-body">
-                                <a v-bind:href="GoogleSpreadsheetRow.LINK" target="blank" class="text-decoration-none">
-                                    <p class="card-title mb-0 text-light">{{limitText( GoogleSpreadsheetRow.TITLE, 80)}}</p>
-                                </a>
-                                <div class="mt-auto text-muted small text-end">
-                                    {{GoogleSpreadsheetRow.AUTHOR}}
+                        <div class="card mb-3 bg-dark post">
+                            <div class="row g-0">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <a v-bind:href="GoogleSpreadsheetRow.LINK" target="blank" class="rounded-start thumbnail text-decoration-none" :style="`background-image: url('${GoogleSpreadsheetRow.THUMBNAIL}')`" v-if="GoogleSpreadsheetRow.THUMBNAIL"></a>
+                                    <div v-else class="img-fluid p-3 text-center text-muted">No image available</div>
+                                </div>
+                                <div class="col-md-8">
+                                <div class="card-body">
+                                    <a v-bind:href="GoogleSpreadsheetRow.LINK" target="blank" class="text-decoration-none">
+                                        <p class="card-title mb-0 text-light">{{limitText(GoogleSpreadsheetRow.TITLE, 80)}}</p>
+                                        <p class="text-muted mb-0 text-nowrap text-truncate">{{GoogleSpreadsheetRow.DESCRIPTION || ''}}</p>
+                                    </a>
+                                    <div class="mt-2 text-muted small text-end">
+                                        {{GoogleSpreadsheetRow.AUTHOR}}
+                                    </div>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -93,7 +74,6 @@
 
 <script>
 import { GoogleSpreadsheet } from 'google-spreadsheet';
-// import LinkPrevue from 'link-prevue'
 
 const SHEET_ID = process.env.VUE_APP_SHEET_ID;
 const CREDENTIALS = {
@@ -102,11 +82,7 @@ const CREDENTIALS = {
 };
 export default {
   name: 'Home',
-  
-  components: {
-    // LinkPrevue
-  },
-  
+
   data () {
     return {
       streamers: [],
