@@ -51,12 +51,12 @@
                                 <div class="card mb-3 bg-dark post">
                                     <div class="row g-0">
                                         <div class="col-md-4 d-flex align-items-center">
-                                            <a v-bind:href="GoogleSpreadsheetRow.LINK" target="blank" class="rounded-start thumbnail text-decoration-none" :style="`background-image: url('${GoogleSpreadsheetRow.THUMBNAIL}')`" v-if="GoogleSpreadsheetRow.THUMBNAIL"></a>
+                                            <a :href="GoogleSpreadsheetRow.LINK" target="blank" class="rounded-start thumbnail text-decoration-none" :style="`background-image: url('${GoogleSpreadsheetRow.THUMBNAIL}')`" v-if="GoogleSpreadsheetRow.THUMBNAIL"></a>
                                             <div v-else class="img-fluid p-3 text-center text-muted">No image available</div>
                                         </div>
                                         <div class="col-md-8">
                                         <div class="card-body">
-                                            <a v-bind:href="GoogleSpreadsheetRow.LINK" target="blank" class="text-decoration-none">
+                                            <a :href="GoogleSpreadsheetRow.LINK" target="blank" class="text-decoration-none">
                                                 <p class="card-title mb-0 text-light">{{limitText(GoogleSpreadsheetRow.TITLE, 80)}}</p>
                                                 <p class="text-muted mb-0 text-nowrap text-truncate">{{GoogleSpreadsheetRow.DESCRIPTION || ''}}</p>
                                             </a>

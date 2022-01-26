@@ -28,7 +28,7 @@
           <div class="modal-body">
             <div class="text-center text-warning h3 mb-5">Congratulations!!!</div>
             <div class="d-flex align-items-center justify-content-center">
-                <div class="flip-card" @click="open" :class="{'open' : isOpen}" @mouseover="cardHover" @mouseout="cardBlur">
+                <div class="flip-card" @click="open" :class="{'open' : isOpen, 'is-url' : validURL(viewItem)}" @mouseover="cardHover" @mouseout="cardBlur" >
                     <div class="flip-card-inner">
                         <div class="flip-card-front bg-primary d-flex align-items-center justify-content-center">
                             <!-- <div class="display-3 text-light">
@@ -38,7 +38,16 @@
                         </div>
                         <div class="flip-card-back bg-warning d-flex align-items-center justify-content-center">
                             <div class="h4 text-dark">
-                                {{ viewItem }}
+                                <a
+                                    class="small text winner"
+                                    v-if="validURL(viewItem)"
+                                    :href="viewItem"
+                                    target="_blank"
+                                >{{viewItem}}</a>
+
+                                <span v-else>
+                                    {{ viewItem }}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -99,7 +108,7 @@ export default {
             });
             this.cardBlur();
             const audio = document.querySelector("#audio-wow");
-            audio.volume = .6;
+            audio.volume = .1;
             audio.play();
         },
         closeAndRemove (viewItem) {
@@ -114,13 +123,18 @@ export default {
         cardHover () {
             if(this.isOpen) return;
             const audio = document.querySelector("#audio-roll");
-            audio.volume = .6;
+            audio.volume = .1;
             audio.play();
         },
         cardBlur () {
             const audio = document.querySelector("#audio-roll");
             audio.pause();
             audio.currentTime = 0;
+        },
+
+         validURL(str) {
+            try { return Boolean(new URL(str)); }
+            catch(e){ return false; }
         }
     }
 }
@@ -150,6 +164,10 @@ export default {
         height: 200px;
         perspective: 1000px; /* Remove this if you don't want the 3D effect */
         cursor: pointer;
+    }
+
+    .flip-card.open.is-url {
+        width: 500px;
     }
 
     /* This container is needed to position the front and back side */
@@ -190,5 +208,9 @@ export default {
         to {
             box-shadow: 0 0 100px 20px #e1ad1d;
         }
+    }
+
+    a.winner:hover {
+        background-color: transparent !important;
     }
 </style>
