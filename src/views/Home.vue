@@ -32,6 +32,10 @@
                                 <a class="px-2 text-light text-decoration-none d-inline-flex align-items-center" href="https://discord.gg/z83AaZuc6z" target="blank" aria-label="discord">
                                     <small>NSG-Show</small><img class="ms-2" src="@/assets/discord-logo.png" alt="" height="30">
                                 </a>
+
+                                <a class="px-2 text-light text-decoration-none d-inline-flex align-items-center" href="https://discord.gg/f5axpKQ8cT" target="blank" aria-label="discord">
+                                    <small>SBT Official</small><img class="ms-2" src="@/assets/discord-logo.png" alt="" height="30">
+                                </a>
                             </div>
 
                             <div class="px-2 d-md-flex bg-black flex-wrap align-items-center">
