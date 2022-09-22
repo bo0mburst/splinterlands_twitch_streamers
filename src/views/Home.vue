@@ -46,6 +46,9 @@
                                 <a href="https://www.streamraiders.com" title="https://www.streamraiders.com" target="blank" class="bg-dark py-1 px-3 my-2 d-inline-block small me-2 rounded rounded-pill text-light text-decoration-none">Stream Raiders</a>
                             </div>
                         </div>
+                        <div class="d-flex align-items-center justify-content-center mb-5">
+                            <iframe src="https://player.twitch.tv/?channel=splinterlandstv&parent=nosleepgang.netlify.app" frameborder="0" allowfullscreen="true" scrolling="no" height="480" width="854"></iframe>
+                        </div>
                         <div class="row" v-if="posts.length">
                             <div
                                 v-for="(GoogleSpreadsheetRow, index) in posts"
