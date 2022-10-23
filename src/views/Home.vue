@@ -51,7 +51,10 @@
                         <iframe src="https://player.twitch.tv/?channel=splinterlandstv&parent=nosleepgang.netlify.app" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>
                     </div>
                     <div class="bg-darker px-3 py-2">
-                        <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4" v-if="posts.length">
+                        <div v-if="isPostLoading" class="py-5 bg-black d-flex align-items-center justify-content-center">
+                            <div class="spinner-grow text-warning loading"></div>
+                        </div>
+                        <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4" v-if="!isPostLoading && posts.length">
                             <div
                                 class="col"
                                 v-for="(post, index) in posts"
@@ -76,7 +79,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-else class="py-5">
+                        <div v-if="!isPostLoading && !posts.length" class="py-5">
                             <p class="text-muted">No latest posts</p>
                         </div>
                     </div>
@@ -104,7 +107,8 @@ export default {
     return {
       streamers: [],
       posts: [],
-      isLoading: true
+      isLoading: true,
+      isPostLoading: true,
     }
   },
 
@@ -137,6 +141,9 @@ export default {
         const users = await sheetPeakdUsers.getRows();
         this.isLoading = false;
 
+        this.isPostLoading = true;
+        let posts = [];
+
         for (const {USERS} of users) {
             const res = await this.getPost(USERS);
             if (!res.length) return
@@ -149,18 +156,21 @@ export default {
             const url = post.url;
             const created = new Date(post.created).toDateString();
 
-            this.posts = [
-                ...this.posts,
-                {
-                    image,
-                    title,
-                    author,
-                    description,
-                    url,
-                    created,
-                }
-            ]
+            posts.push({
+                image,
+                title,
+                author,
+                description,
+                url,
+                created,
+            })
         }
+
+        posts.sort((a, b) => {
+            return new Date(b.created) - new Date(a.created)
+        });
+        this.posts = [...posts];
+        this.isPostLoading = false;
     },
 
     async getPost (account) {
