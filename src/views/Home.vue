@@ -66,7 +66,7 @@
                                         No image available
                                     </div>
                                     <div class="card-body">
-                                        <a href="post.url"  class="card-title text-secondary text-decoration-none" target="blank" >
+                                        <a :href="post.url"  class="card-title text-secondary text-decoration-none" target="blank" >
                                             <h5>{{limitText(post.title, 150)}}</h5>
                                         </a>
                                         <p class="card-text">{{limitText(post.description, 200) || ''}}</p>
