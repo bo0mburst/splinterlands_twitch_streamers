@@ -273,7 +273,7 @@ export default {
     }
 
     .twitch-wrapper {
-        width: 80vw;
+        width: 100%;
         margin: 0 auto;
         height: 30vw;
         max-width: 1440px;
