@@ -237,7 +237,9 @@ export default {
   opacity: 0;
 }
 
-
+.twitch-wrapper {
+    height: 350px;
+}
 @media (min-width: 768px) {
     .main-page-header {
         position: sticky;
@@ -275,7 +277,7 @@ export default {
     .twitch-wrapper {
         width: 100%;
         margin: 0 auto;
-        height: 30vw;
+        height: 500px;
         max-width: 1440px;
     }
 }
