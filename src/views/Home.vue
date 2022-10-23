@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center mb-5 twitch-wrapper">
-                        <iframe src="https://player.twitch.tv/?channel=splinterlandstv&parent=nosleepgang.netlify.app" frameborder="0" allowfullscreen="true" scrolling="no" height="auto" width="100%"></iframe>
+                        <iframe src="https://player.twitch.tv/?channel=splinterlandstv&parent=nosleepgang.netlify.app" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>
                     </div>
                     <div class="bg-darker px-3 py-2">
                         <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4" v-if="posts.length">
@@ -263,8 +263,10 @@ export default {
     }
 
     .twitch-wrapper {
-        max-width: 1440px;
+        width: 80vw;
         margin: 0 auto;
+        height: 30vw;
+        max-width: 1440px;
     }
 }
 </style>
