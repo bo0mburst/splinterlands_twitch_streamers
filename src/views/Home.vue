@@ -51,10 +51,7 @@
                         <iframe src="https://player.twitch.tv/?channel=splinterlandstv&parent=nosleepgang.netlify.app" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>
                     </div>
                     <div class="bg-darker px-3 py-2">
-                        <div v-if="isPostLoading" class="py-5 bg-black d-flex align-items-center justify-content-center">
-                            <div class="spinner-grow text-warning loading"></div>
-                        </div>
-                        <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4" v-if="!isPostLoading && posts.length">
+                        <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4" v-if="posts.length">
                             <div
                                 class="col"
                                 v-for="(post, index) in posts"
@@ -78,6 +75,9 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div v-if="isPostLoading" class="py-5 bg-black d-flex align-items-center justify-content-center">
+                            <div class="spinner-grow text-warning loading"></div>
                         </div>
                         <div v-if="!isPostLoading && !posts.length" class="py-5">
                             <p class="text-muted">No latest posts</p>
@@ -136,13 +136,19 @@ export default {
 
         const sheetStreamers = doc.sheetsByTitle['streamers'];
         let streamersRandomized = await sheetStreamers.getRows();
-        this.streamers = this.shuffle(streamersRandomized);
+        this.streamers = streamersRandomized.sort(() => {
+            return Math.random() - 0.5
+        })
         const sheetPeakdUsers = doc.sheetsByTitle['peakd_users'];
-        const users = await sheetPeakdUsers.getRows();
+        let users = await sheetPeakdUsers.getRows();
         this.isLoading = false;
 
         this.isPostLoading = true;
-        let posts = [];
+
+        // randomize
+        users = users.sort(() => {
+            return Math.random() - 0.5;
+        })
 
         for (const {USERS} of users) {
             const res = await this.getPost(USERS);
@@ -156,20 +162,17 @@ export default {
             const url = post.url;
             const created = new Date(post.created).toDateString();
 
-            posts.push({
+            
+            this.posts = [...this.posts,{
                 image,
                 title,
                 author,
                 description,
                 url,
                 created,
-            })
+            } ];
         }
 
-        posts.sort((a, b) => {
-            return new Date(b.created) - new Date(a.created)
-        });
-        this.posts = [...posts];
         this.isPostLoading = false;
     },
 
@@ -182,20 +185,6 @@ export default {
         const {result} = await res.json();
         return result;
     },
-
-    shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
-
-            // swap elements array[i] and array[j]
-            // we use "destructuring assignment" syntax to achieve that
-            // you'll find more details about that syntax in later chapters
-            // same can be written as:
-            // let t = array[i]; array[i] = array[j]; array[j] = t
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
   }
 }
 </script>
