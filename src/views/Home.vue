@@ -1,6 +1,7 @@
 <template>
     <div>
         <div v-if="isLoading" class="min-vh-100 bg-black d-flex align-items-center justify-content-center">
+            <!-- loading -->
             <div class="spinner-grow text-warning loading"></div>
         </div>
 
